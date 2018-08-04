@@ -1,168 +1,150 @@
 package cn.dectfix.converter.impl;
 
 import cn.dectfix.converter.JSON2Slice;
-import cn.dectfix.model.Slice;
-import cn.dectfix.model.common.Column;
-import cn.dectfix.model.common.ColumnList;
-import cn.dectfix.model.common.*;
+import cn.dectfix.type.Slice;
+import cn.dectfix.type.common.Column;
+import cn.dectfix.type.common.CommonList;
+import cn.dectfix.type.common.*;
+import cn.dectfix.type.exception.SliceFormatNotSupportedException;
+import cn.dectfix.util.TestErrorUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
-{
-	"table": {
-		"name": "job",
-		"isSQL": 0
-	},
-	"dimension": [{
-		"name": "job_id",
-		"verbose": "id"
-	}, {
-		"name": "job_time",
-		"verbose": "time"
-	}],
-	"metric": [{
-		"name": "count(1)",
-		"verbose": "num"
-	}, {
-		"name": "count(2)",
-		"verbose": "2xnum"
-	}],
-	"whereFilter": [{
-		"name": "job_id",
-		"op": ">",
-		"value": "90"
-	}],
-	"havingFilter": [
-
-		{
-			"name": "count(1)",
-			"op": ">=",
-			"value": "80"
-		}
-	],
-	"order": [{
-		"name": "id",
-		"dir": "asc"
-	}, {
-		"name": "num",
-		"dir": "asc"
-	}],
-	"limit": {
-		"length": 1000
-	}
-}
-*/
 
 public class SimpleJSON2Slice implements JSON2Slice {
     @Override
-    public Slice format(String json) {
+    public Slice format(String json) throws SliceFormatNotSupportedException {
         JSONObject obj = (JSONObject) JSONObject.parse(json);
         return format(obj);
     }
 
     @Override
-    public Slice format(JSONObject root) {
+    public Slice format(JSONObject root) throws SliceFormatNotSupportedException {
         Slice slice = new Slice();
 
+        //[title]
+        String title = root.getString("title");
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(title);
+        //###END###
+        slice.setTitle(title);
+
+        //<database>
+        String database = root.getString("database");
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(database);
+        //###END###
+        slice.setDatabase(database);
+
         //<table>
-        JSONObject tableJSON = root.getJSONObject("table");
-        if(tableJSON!=null){
-            String tableName = tableJSON.getString("name");
-            int isSQL = tableJSON.getInteger("isSQL");
-            Table table = new Table(tableName,isSQL);
-            slice.setTable(table);
-        }
+        String table = root.getString("table");
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(table);
+        TestErrorUtil.testNotInt(table);
+        TestErrorUtil.testNot0Len(table);
+        //###END###
+        slice.setTable(new Table(table));
+
+        //<type>
+        String type = root.getString("type");
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(type);
+        TestErrorUtil.testNotInt(type);
+        TestErrorUtil.testNot0Len(type);
+        //###END###
+        slice.setType(type);
 
         //[dimension]
         JSONArray dimensionJSON = root.getJSONArray("dimension");
-        if(dimensionJSON!=null){
-            ColumnList dimension = parse2ColumnList(dimensionJSON);
-            slice.setDimension(dimension);
-        }
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(dimensionJSON);
+        //###END###
+        CommonList dimension = parse2ColumnList(dimensionJSON);
+        slice.setDimensions(dimension);
+
 
         //[metric]
         JSONArray metricJSON = root.getJSONArray("metric");
-        if(metricJSON!=null) {
-            ColumnList metric = parse2ColumnList(metricJSON);
-            slice.setMetric(metric);
-        }
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(metricJSON);
+        //###END###
+        CommonList metric = parse2ColumnList(metricJSON);
+        slice.setMetrics(metric);
 
-        //[whereFilter]
-        JSONArray whereFilterJSON = root.getJSONArray("whereFilter");
-        if(whereFilterJSON!=null) {
-            FilterList whereFilter = parse2FilterList(whereFilterJSON);
-            slice.setWhereFilter(whereFilter);
-        }
-
-        //[havingFilter]
-        JSONArray havingFilterJSON = root.getJSONArray("havingFilter");
-        if(havingFilterJSON!=null) {
-            FilterList havingFilter = parse2FilterList(havingFilterJSON);
-            slice.setHavingFilter(havingFilter);
-        }
+        //[filter]
+        JSONArray filterJSON = root.getJSONArray("filter");
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(filterJSON);
+        //###END###
+        CommonList<Filter> filterList = parse2FilterList(filterJSON);
+        slice.setFilters(filterList);
 
         //[order]
         JSONArray orderJSON = root.getJSONArray("order");
-        if(orderJSON!=null){
-            OrderList order = parse2OrderList(orderJSON);
-            slice.setOrder(order);
-        }
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(orderJSON);
+        CommonList<Order> orderList = parse2OrderList(orderJSON);
+        slice.setOrders(orderList);
 
         //[limit]
-        JSONObject limitJSON = root.getJSONObject("limit");
-        if(limitJSON!=null){
-            int limitLength = limitJSON.getInteger("length");
-            Limit limit = new Limit(limitLength);
-            slice.setLimit(limit);
-        }
+        String limit = root.getString("limit");
+        //###DETECT ERROR###
+        TestErrorUtil.testNotNull(limit);
+        //###END###
+        slice.setLimit(limit);
 
         return slice;
     }
 
-    private ColumnList parse2ColumnList(JSONArray array){
+    private CommonList<Column> parse2ColumnList(JSONArray array){
         List<Column> columns = new ArrayList();
         for(int i=0;i<array.size();i++){
             JSONObject obj = (JSONObject) array.get(i);
             String name = obj.getString("name");
             String verbose = obj.getString("verbose");
-            columns.add(new Column(name,verbose));
+            String expression = obj.getString("expression");
+            columns.add(new Column(name,verbose,expression));
         }
 
-        ColumnList columnList = new ColumnList();
+        CommonList columnList = new CommonList();
         columnList.setColumns(columns);
         return columnList;
     }
 
-    private FilterList parse2FilterList(JSONArray array){
+    private CommonList<Filter> parse2FilterList(JSONArray array){
         List<Filter> filters = new ArrayList();
         for(int i=0;i<array.size();i++){
             JSONObject obj = (JSONObject) array.get(i);
             String name = obj.getString("name");
-            String op = obj.getString("op");
-            String verbose = obj.getString("value");
-            filters.add(new Filter(name,op,verbose));
+            String verbose = obj.getString("verbose");
+            String expression = obj.getString("expression");
+            int type = obj.getInteger("type");
+            String sql = obj.getString("sql");
+            filters.add(new Filter(name,verbose,expression,sql,type));
         }
 
-        FilterList filterList = new FilterList();
-        filterList.setFilters(filters);
-        return filterList;
+        CommonList columnList = new CommonList();
+        columnList.setColumns(filters);
+        return columnList;
     }
 
-    private OrderList parse2OrderList(JSONArray array){
+    private CommonList<Order> parse2OrderList(JSONArray array){
         List<Order> orders = new ArrayList();
         for(int i=0;i<array.size();i++){
             JSONObject obj = (JSONObject) array.get(i);
             String name = obj.getString("name");
-            String dir = obj.getString("dir");
-            orders.add(new Order(name,dir));
+            String verbose = obj.getString("verbose");
+            String expression = obj.getString("expression");
+            int type = obj.getInteger("type");
+            String sql = obj.getString("sql");
+            orders.add(new Order(name,verbose,expression,sql,type));
         }
 
-        OrderList orderList = new OrderList();
-        orderList.setOrders(orders);
-        return orderList;
+        CommonList columnList = new CommonList();
+        columnList.setColumns(orders);
+        return columnList;
     }
 
 }

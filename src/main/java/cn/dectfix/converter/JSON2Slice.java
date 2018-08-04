@@ -1,10 +1,11 @@
 package cn.dectfix.converter;
 
-import cn.dectfix.model.Slice;
+import cn.dectfix.type.Slice;
+import cn.dectfix.type.exception.SliceFormatNotSupportedException;
 import com.alibaba.fastjson.JSONObject;
 
 public interface JSON2Slice {
-    Slice format(String json);
+    Slice format(String json) throws SliceFormatNotSupportedException;
 
-    Slice format(JSONObject json);
+    Slice format(JSONObject json) throws SliceFormatNotSupportedException;
 }

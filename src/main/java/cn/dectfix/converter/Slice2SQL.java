@@ -1,6 +1,6 @@
 package cn.dectfix.converter;
 
-import cn.dectfix.model.Slice;
+import cn.dectfix.type.Slice;
 
 public interface Slice2SQL {
     String format(Slice slice);
