@@ -1,4 +1,4 @@
-package cn.dectfix.config;
+package com.github.memorylorry.config;
 
 public class ErrorMessage {
     public static String VARIABLE_MUST_BE_INT = "变量必须是int类型！";

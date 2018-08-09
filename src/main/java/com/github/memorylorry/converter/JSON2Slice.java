@@ -1,7 +1,7 @@
-package cn.dectfix.converter;
+package com.github.memorylorry.converter;
 
-import cn.dectfix.type.Slice;
-import cn.dectfix.type.exception.SliceFormatNotSupportedException;
+import com.github.memorylorry.type.Slice;
+import com.github.memorylorry.type.exception.SliceFormatNotSupportedException;
 import com.alibaba.fastjson.JSONObject;
 
 public interface JSON2Slice {

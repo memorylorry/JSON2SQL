@@ -1,12 +1,10 @@
-package cn.dectfix.converter.impl;
+package com.github.memorylorry.converter.impl;
 
-import cn.dectfix.converter.JSON2Slice;
-import cn.dectfix.type.Slice;
-import cn.dectfix.type.common.Column;
-import cn.dectfix.type.common.CommonList;
-import cn.dectfix.type.common.*;
-import cn.dectfix.type.exception.SliceFormatNotSupportedException;
-import cn.dectfix.util.TestErrorUtil;
+import com.github.memorylorry.converter.JSON2Slice;
+import com.github.memorylorry.type.Slice;
+import com.github.memorylorry.type.common.*;
+import com.github.memorylorry.type.exception.SliceFormatNotSupportedException;
+import com.github.memorylorry.util.TestErrorUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 

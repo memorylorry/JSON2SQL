@@ -1,4 +1,4 @@
-package cn.dectfix.type.exception;
+package com.github.memorylorry.type.exception;
 
 public class SliceFormatNotSupportedException extends Exception {
 

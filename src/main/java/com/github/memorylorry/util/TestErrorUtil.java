@@ -1,7 +1,7 @@
-package cn.dectfix.util;
+package com.github.memorylorry.util;
 
-import cn.dectfix.config.ErrorMessage;
-import cn.dectfix.type.exception.SliceFormatNotSupportedException;
+import com.github.memorylorry.config.ErrorMessage;
+import com.github.memorylorry.type.exception.SliceFormatNotSupportedException;
 
 public class TestErrorUtil {
     public static void testNotNull(String value) throws SliceFormatNotSupportedException{

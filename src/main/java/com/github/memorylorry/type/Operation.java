@@ -1,4 +1,4 @@
-package cn.dectfix.type;
+package com.github.memorylorry.type;
 
 public abstract class Operation {
     /**

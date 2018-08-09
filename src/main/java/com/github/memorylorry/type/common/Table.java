@@ -1,6 +1,6 @@
-package cn.dectfix.type.common;
+package com.github.memorylorry.type.common;
 
-import cn.dectfix.type.Operation;
+import com.github.memorylorry.type.Operation;
 
 public class Table extends Operation {
 

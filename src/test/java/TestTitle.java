@@ -1,7 +1,6 @@
-import cn.dectfix.converter.impl.SimpleJSON2Slice;
-import cn.dectfix.type.Slice;
-import cn.dectfix.type.exception.SliceFormatNotSupportedException;
-import org.junit.Test;
+import com.github.memorylorry.converter.impl.SimpleJSON2Slice;
+import com.github.memorylorry.type.Slice;
+import com.github.memorylorry.type.exception.SliceFormatNotSupportedException;
 
 //database字段暂时未使用，不做测试
 public class TestTitle {

@@ -1,7 +1,7 @@
-package cn.dectfix.type;
+package com.github.memorylorry.type;
 
-import cn.dectfix.config.ChartType;
-import cn.dectfix.type.common.*;
+import com.github.memorylorry.config.ChartType;
+import com.github.memorylorry.type.common.*;
 
 import java.util.List;
 

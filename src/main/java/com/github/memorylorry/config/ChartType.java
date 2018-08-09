@@ -1,4 +1,4 @@
-package cn.dectfix.config;
+package com.github.memorylorry.config;
 
 public enum ChartType {
     LINE("line",1),
