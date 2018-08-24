@@ -7,11 +7,8 @@ public class Filter extends Operation {
     private String name;//不允许有空格
     private String verbose;
     private String expression;//如果expression为空串，则用name
-    /**
-     * sql is used to filter
-     * 其中关键字，一律用#{value},后端去决定用name还是用expression
-     */
-    private String sql;
+    private String operation;
+    private String option;
     /**
      * type 0-dimension(where) 1-metric(having)
      */
@@ -19,24 +16,18 @@ public class Filter extends Operation {
 
     public Filter(){}
 
-    public Filter(String name,String verbose,String expression,String sql,int type){
+    public Filter(String name,String verbose,String expression,String operation,String option,int type){
         this.name = name;
         this.verbose = verbose;
         this.expression = expression;
-        this.sql = sql;
+        this.operation = operation;
+        this.option = option;
         this.type = type;
     }
 
     @Override
     public String toSQL() {
-        if("".equals(expression))expression=name;
-
-        String res = "";
-        String regx = "#\\{value}";
-        //res = (type==0)?sql.replaceAll(regx,expression):sql.replaceAll(regx,name);
-        res = sql.replaceAll(regx,expression);
-
-        return res;
+        return FilterOptionHelper.createFilterOptionHelper(this).getOptionString();
     }
 
     public String getName() {
@@ -63,12 +54,20 @@ public class Filter extends Operation {
         this.expression = expression;
     }
 
-    public String getSql() {
-        return sql;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
     }
 
     public int getType() {

@@ -118,9 +118,10 @@ public class SimpleJSON2Slice implements JSON2Slice {
             String name = obj.getString("name");
             String verbose = obj.getString("verbose");
             String expression = obj.getString("expression");
+            String operation = obj.getString("operation");
+            String option = obj.getString("option");
             int type = obj.getInteger("type");
-            String sql = obj.getString("sql");
-            filters.add(new Filter(name,verbose,expression,sql,type));
+            filters.add(new Filter(name,verbose,expression,operation,option,type));
         }
 
         CommonList columnList = new CommonList();
@@ -135,9 +136,8 @@ public class SimpleJSON2Slice implements JSON2Slice {
             String name = obj.getString("name");
             String verbose = obj.getString("verbose");
             String expression = obj.getString("expression");
-            int type = obj.getInteger("type");
-            String sql = obj.getString("sql");
-            orders.add(new Order(name,verbose,expression,sql,type));
+            String operation = obj.getString("operation");
+            orders.add(new Order(name,verbose,expression,operation));
         }
 
         CommonList columnList = new CommonList();
