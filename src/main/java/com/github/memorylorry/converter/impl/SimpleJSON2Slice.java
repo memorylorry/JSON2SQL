@@ -1,26 +1,22 @@
 package com.github.memorylorry.converter.impl;
 
 import com.github.memorylorry.converter.JSON2Slice;
-import com.github.memorylorry.type.Slice;
-import com.github.memorylorry.type.common.*;
+import com.github.memorylorry.type.*;
 import com.github.memorylorry.type.exception.SliceFormatNotSupportedException;
 import com.github.memorylorry.util.TestErrorUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SimpleJSON2Slice implements JSON2Slice {
     @Override
-    public Slice format(String json) throws SliceFormatNotSupportedException {
+    public SimpleSlice format(String json) throws SliceFormatNotSupportedException {
         JSONObject obj = (JSONObject) JSONObject.parse(json);
         return format(obj);
     }
 
     @Override
-    public Slice format(JSONObject root) throws SliceFormatNotSupportedException {
-        Slice slice = new Slice();
+    public SimpleSlice format(JSONObject root) throws SliceFormatNotSupportedException {
+        SimpleSlice slice = new SimpleSlice();
 
         //[title]
         String title = root.getString("title");
@@ -46,20 +42,19 @@ public class SimpleJSON2Slice implements JSON2Slice {
         slice.setTable(new Table(table));
 
         //<type>
-        String type = root.getString("type");
+        String type = root.getString("type_val");
         //###DETECT ERROR###
         TestErrorUtil.testNotNull(type);
-        TestErrorUtil.testNotInt(type);
         TestErrorUtil.testNot0Len(type);
         //###END###
-        slice.setType(type);
+        slice.setType(new Integer(type));
 
         //[dimension]
         JSONArray dimensionJSON = root.getJSONArray("dimension");
         //###DETECT ERROR###
         TestErrorUtil.testNotNull(dimensionJSON);
         //###END###
-        CommonList dimension = parse2ColumnList(dimensionJSON);
+        ColumnList dimension = parse2ColumnList(dimensionJSON);
         slice.setDimensions(dimension);
 
 
@@ -68,7 +63,7 @@ public class SimpleJSON2Slice implements JSON2Slice {
         //###DETECT ERROR###
         TestErrorUtil.testNotNull(metricJSON);
         //###END###
-        CommonList metric = parse2ColumnList(metricJSON);
+        ColumnList metric = parse2ColumnList(metricJSON);
         slice.setMetrics(metric);
 
         //[filter]
@@ -76,14 +71,14 @@ public class SimpleJSON2Slice implements JSON2Slice {
         //###DETECT ERROR###
         TestErrorUtil.testNotNull(filterJSON);
         //###END###
-        CommonList<Filter> filterList = parse2FilterList(filterJSON);
+        RestrictList<Filter> filterList = parse2FilterList(filterJSON);
         slice.setFilters(filterList);
 
         //[order]
         JSONArray orderJSON = root.getJSONArray("order");
         //###DETECT ERROR###
         TestErrorUtil.testNotNull(orderJSON);
-        CommonList<Order> orderList = parse2OrderList(orderJSON);
+        RestrictList<Order> orderList = parse2OrderList(orderJSON);
         slice.setOrders(orderList);
 
         //[limit]
@@ -96,8 +91,8 @@ public class SimpleJSON2Slice implements JSON2Slice {
         return slice;
     }
 
-    private CommonList<Column> parse2ColumnList(JSONArray array){
-        List<Column> columns = new ArrayList();
+    private ColumnList<Column> parse2ColumnList(JSONArray array){
+        ColumnList<Column> columns = new ColumnList();
         for(int i=0;i<array.size();i++){
             JSONObject obj = (JSONObject) array.get(i);
             String name = obj.getString("name");
@@ -106,13 +101,11 @@ public class SimpleJSON2Slice implements JSON2Slice {
             columns.add(new Column(name,verbose,expression));
         }
 
-        CommonList columnList = new CommonList();
-        columnList.setColumns(columns);
-        return columnList;
+        return columns;
     }
 
-    private CommonList<Filter> parse2FilterList(JSONArray array){
-        List<Filter> filters = new ArrayList();
+    private RestrictList<Filter> parse2FilterList(JSONArray array){
+        RestrictList<Filter> filters = new RestrictList();
         for(int i=0;i<array.size();i++){
             JSONObject obj = (JSONObject) array.get(i);
             String name = obj.getString("name");
@@ -124,13 +117,11 @@ public class SimpleJSON2Slice implements JSON2Slice {
             filters.add(new Filter(name,verbose,expression,operation,option,type));
         }
 
-        CommonList columnList = new CommonList();
-        columnList.setColumns(filters);
-        return columnList;
+        return filters;
     }
 
-    private CommonList<Order> parse2OrderList(JSONArray array){
-        List<Order> orders = new ArrayList();
+    private RestrictList<Order> parse2OrderList(JSONArray array){
+        RestrictList<Order> orders = new RestrictList();
         for(int i=0;i<array.size();i++){
             JSONObject obj = (JSONObject) array.get(i);
             String name = obj.getString("name");
@@ -140,9 +131,7 @@ public class SimpleJSON2Slice implements JSON2Slice {
             orders.add(new Order(name,verbose,expression,operation));
         }
 
-        CommonList columnList = new CommonList();
-        columnList.setColumns(orders);
-        return columnList;
+        return orders;
     }
 
 }

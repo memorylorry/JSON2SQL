@@ -1,4 +1,4 @@
-package com.github.memorylorry.config;
+package com.github.memorylorry.type.helper;
 
 import java.util.ArrayList;
 

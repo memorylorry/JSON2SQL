@@ -1,8 +1,6 @@
-package com.github.memorylorry.type.common;
+package com.github.memorylorry.type;
 
-import com.github.memorylorry.type.Operation;
-
-public class Table extends Operation {
+public class Table {
 
     private String name;//存储表名 或 sql
 
@@ -12,8 +10,7 @@ public class Table extends Operation {
         this.name = name;
     }
 
-    @Override
-    public String toSQL() {
+    public String buildSQL() {
         if(name.toUpperCase().indexOf("SELECT")>=0){
             return "("+name+") t";
         }

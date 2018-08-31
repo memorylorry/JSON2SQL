@@ -1,8 +1,8 @@
-package com.github.memorylorry.type.common;
+package com.github.memorylorry.type;
 
-import com.github.memorylorry.type.Operation;
+import com.github.memorylorry.type.helper.FilterOptionHelper;
 
-public class Filter extends Operation {
+public class Filter implements RestrictOperate {
 
     private String name;//不允许有空格
     private String verbose;
@@ -26,7 +26,7 @@ public class Filter extends Operation {
     }
 
     @Override
-    public String toSQL() {
+    public String buildSQL() {
         return FilterOptionHelper.createFilterOptionHelper(this).getOptionString();
     }
 

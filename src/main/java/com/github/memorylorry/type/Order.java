@@ -1,8 +1,6 @@
-package com.github.memorylorry.type.common;
+package com.github.memorylorry.type;
 
-import com.github.memorylorry.type.Operation;
-
-public class Order extends Operation {
+public class Order implements RestrictOperate {
 
     private String name;//不允许有空格
     private String verbose;
@@ -19,7 +17,7 @@ public class Order extends Operation {
     }
 
     @Override
-    public String toSQL() {
+    public String buildSQL() {
         String columnName = expression!=""?expression:name;
         String res = columnName+" "+operation;
         return res;

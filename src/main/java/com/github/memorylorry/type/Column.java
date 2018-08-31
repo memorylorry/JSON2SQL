@@ -1,8 +1,6 @@
-package com.github.memorylorry.type.common;
+package com.github.memorylorry.type;
 
-import com.github.memorylorry.type.Operation;
-
-public class Column extends Operation{
+public class Column implements ColumnOperate {
 
     private String name;//不允许有空格
     private String verbose;
@@ -17,12 +15,15 @@ public class Column extends Operation{
     }
 
     @Override
-    public String toSQLWithAS() {
-        return "".equals(expression)?name:(expression + " AS " + name);
+    public String buildSQL(boolean isWithAS) {
+        if(isWithAS){
+            return "".equals(expression)?name:(expression + " AS " + name);
+        }
+        return buildSQL();
     }
 
     @Override
-    public String toSQL() {
+    public String buildSQL() {
         return "".equals(expression)?name:expression;
     }
 

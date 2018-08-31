@@ -1,6 +1,6 @@
-package com.github.memorylorry.type.common;
+package com.github.memorylorry.type.helper;
 
-import com.github.memorylorry.config.FilterOperationType;
+import com.github.memorylorry.type.Filter;
 
 import java.util.ArrayList;
 
