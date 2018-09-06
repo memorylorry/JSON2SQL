@@ -18,7 +18,7 @@ public class Order implements RestrictOperate {
 
     @Override
     public String buildSQL() {
-        String columnName = expression!=""?expression:name;
+        String columnName = "".equals(expression)?name:expression;
         String res = columnName+" "+operation;
         return res;
     }

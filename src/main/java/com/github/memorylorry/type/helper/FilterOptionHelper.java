@@ -1,5 +1,7 @@
 package com.github.memorylorry.type.helper;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.github.memorylorry.type.Filter;
 
 import java.util.ArrayList;
@@ -23,8 +25,9 @@ public class FilterOptionHelper {
         String column = "".equals(filter.getExpression())?filter.getName():filter.getExpression();
         String op = filter.getOperation();
         if(type.equals(ArrayList.class)){
-            String[] options = filter.getOption().split(",");
-            for(String o:options){
+            JSONArray optionsArr = JSON.parseArray(filter.getOption());
+            for(int i=0;i<optionsArr.size();i++){
+                String o = optionsArr.getString(i);
                 option += ",'"+o+"'";
             }
             if(option.length()>0)
