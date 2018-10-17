@@ -18,6 +18,20 @@ public class FilterOptionHelper {
         return filterOptionHelper;
     }
 
+    /**
+     * 根据字符串，处理是否需要携带引号
+     * @param str  如果以fun:开头-不要引号；否则要引号
+     * @param startWith 开始字符
+     * @return
+     */
+    private String formatByFun(String str,String startWith){
+        if(str.startsWith(startWith)&&str.length()>startWith.length()){
+            return str.substring(startWith.length(),str.length());
+        }else{
+            return "'"+str+"'";
+        }
+    }
+
     public String getOptionString(){
         Class type = FilterOperationType.getTypeByOperation(filter.getOperation());
         String option = "";
@@ -27,14 +41,14 @@ public class FilterOptionHelper {
         if(type.equals(ArrayList.class)){
             JSONArray optionsArr = JSON.parseArray(filter.getOption());
             for(int i=0;i<optionsArr.size();i++){
-                String o = optionsArr.getString(i);
-                option += ",'"+o+"'";
+                String o = formatByFun(optionsArr.getString(i),"fun:");
+                option += ","+o;
             }
             if(option.length()>0)
                 option = "("+option.substring(1,option.length())+")";
             sql = column+" "+op+" "+option;
         }else{
-            option = "'"+filter.getOption()+"'";
+            option = formatByFun(filter.getOption(),"fun:");
             sql = column+op+option;
         }
         return sql;

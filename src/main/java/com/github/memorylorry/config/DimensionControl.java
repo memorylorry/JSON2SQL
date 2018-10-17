@@ -1,6 +1,6 @@
 package com.github.memorylorry.config;
 
-public class SQLGenerateControl {
+public class DimensionControl {
     /**
      * These variables store all state that
      * Dimensions will or won't be contact

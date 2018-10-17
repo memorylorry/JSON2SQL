@@ -1,6 +1,6 @@
 package com.github.memorylorry.type;
 
-import com.github.memorylorry.config.SQLGenerateControl;
+import com.github.memorylorry.config.DimensionControl;
 
 public class SimpleSlice implements Slice{
 
@@ -20,9 +20,9 @@ public class SimpleSlice implements Slice{
         String sql = "SELECT ";
 
         //dimension and metric!!! IMPORTAUNT
-        if(type == SQLGenerateControl.DIMENSIN_NOT_EXSIT){
+        if(type == DimensionControl.DIMENSIN_NOT_EXSIT){
             sql += metrics.buildSQL(true);
-        }else if(type == SQLGenerateControl.DIMENSIN_CONCAT){
+        }else if(type == DimensionControl.DIMENSIN_CONCAT){
             int dimensionSize = dimensions.size();
             if(dimensionSize==1){
                 ColumnList<Column> columns = dimensions.addList(metrics,ColumnList.class);
@@ -54,7 +54,8 @@ public class SimpleSlice implements Slice{
         }
 
         //table
-        sql += " FROM "+table.buildSQL();
+        String dbName = (database!=null&&(!"".equals(database)))?(database+"."):"";
+        sql += " FROM "+ dbName + table.buildSQL();
 
         //filters are took apart into 2 parts(dimension and metric)!!!
         RestrictList<Filter> dimensionFilter = new RestrictList<>();
@@ -98,7 +99,8 @@ public class SimpleSlice implements Slice{
     public String buildCountSQL(){
         String sql = "SELECT count(1) FROM ";
         //table
-        sql += table.buildSQL();
+        String dbName = (database!=null&&(!"".equals(database)))?(database+"."):"";
+        sql += dbName+table.buildSQL();
 
         //filters are took apart into 2 parts(dimension and metric)!!!
         RestrictList<Filter> dimensionFilter = new RestrictList<>();
