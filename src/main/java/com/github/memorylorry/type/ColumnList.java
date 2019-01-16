@@ -1,38 +1,29 @@
 package com.github.memorylorry.type;
 
+import java.util.Iterator;
+
 public class ColumnList<E extends ColumnOperate> extends CommonList<E> implements ColumnOperate {
+    public ColumnList() {
+    }
 
-    /**
-     * @return columns with {,} delimeter
-     */
-    @Override
     public String buildSQL() {
-        return buildSQLDivdByValue(",");
+        return this.buildSQLDivdByValue(",");
     }
 
-    /**
-     * @return columns with {,} delimeter
-     */
-    @Override
     public String buildSQL(boolean isWithAS) {
-        if(isWithAS){
-            return buildSQLDivdByValueWithAS(",");
-        }
-        return buildSQL();
+        return isWithAS ? this.buildSQLDivdByValueWithAS(",") : this.buildSQL();
     }
 
-    /**
-     * @return columns with {value} delimeter
-     */
     public String buildSQLDivdByValue(String value) {
         value = value.toUpperCase();
-
         String res = "";
-        for(E column:this){
-            res = res + value + column.buildSQL();
+
+        ColumnOperate column;
+        for(Iterator var3 = this.iterator(); var3.hasNext(); res = res + value + column.buildSQL()) {
+            column = (ColumnOperate)var3.next();
         }
 
-        if(res.length()>0) {
+        if (res.length() > 0) {
             int len = value.length();
             res = res.substring(len, res.length());
         }
@@ -40,23 +31,20 @@ public class ColumnList<E extends ColumnOperate> extends CommonList<E> implement
         return res;
     }
 
-    /**
-     * @return columns with {value} delimeter
-     */
     public String buildSQLDivdByValueWithAS(String value) {
         value = value.toUpperCase();
-
         String res = "";
-        for(E column:this){
-            res = res + value + column.buildSQL(true);
+
+        ColumnOperate column;
+        for(Iterator var3 = this.iterator(); var3.hasNext(); res = res + value + column.buildSQL(true)) {
+            column = (ColumnOperate)var3.next();
         }
 
-        if(res.length()>0) {
+        if (res.length() > 0) {
             int len = value.length();
             res = res.substring(len, res.length());
         }
 
         return res;
     }
-
 }

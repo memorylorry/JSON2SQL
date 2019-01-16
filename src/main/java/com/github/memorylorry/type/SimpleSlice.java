@@ -1,12 +1,12 @@
 package com.github.memorylorry.type;
 
-import com.github.memorylorry.config.DimensionControl;
+import com.github.memorylorry.config.SQLGenerateControl;
+import java.util.Iterator;
 
-public class SimpleSlice implements Slice{
-
+public class SimpleSlice implements Slice {
     private String title;
-    private String database;//不能为空
-    private Table table;//不能为空
+    private String database;
+    private Table table;
     private int type;
     private ColumnList<Column> dimensions;
     private ColumnList<Column> metrics;
@@ -14,126 +14,113 @@ public class SimpleSlice implements Slice{
     private RestrictList<Order> orders;
     private String limit;
 
-    @Override
+    public SimpleSlice() {
+    }
+
     public String buildBasicSQL() throws IllegalAccessException, InstantiationException {
-
         String sql = "SELECT ";
-
-        //dimension and metric!!! IMPORTAUNT
-        if(type == DimensionControl.DIMENSIN_NOT_EXSIT){
-            sql += metrics.buildSQL(true);
-        }else if(type == DimensionControl.DIMENSIN_CONCAT){
-            int dimensionSize = dimensions.size();
-            if(dimensionSize==1){
-                ColumnList<Column> columns = dimensions.addList(metrics,ColumnList.class);
-                sql += columns.buildSQL(true);
-            }else {
-                //add dimension
-                String concatSQL = dimensions.buildSQLDivdByValue(",',',");
-                if(concatSQL.length()>0){
+        if (this.type == SQLGenerateControl.DIMENSIN_NOT_EXSIT) {
+            sql = sql + this.metrics.buildSQL(true);
+        } else if (this.type == SQLGenerateControl.DIMENSIN_CONCAT) {
+            int dimensionSize = this.dimensions.size();
+            if (dimensionSize == 1) {
+                ColumnList<Column> columns = (ColumnList)this.dimensions.addList(this.metrics, ColumnList.class);
+                sql = sql + columns.buildSQL(true);
+            } else {
+                String concatSQL = this.dimensions.buildSQLDivdByValue(",',',");
+                if (concatSQL.length() > 0) {
                     concatSQL = "CONCAT(" + concatSQL + ") AS CONCAT_NAME";
-                    sql += concatSQL;
+                    sql = sql + concatSQL;
                 }
 
-                //add metric
                 String metricSQL = "";
-                if(metrics.size()>0){
-                    metricSQL += "," + metrics.buildSQL(true);
-                    if(concatSQL.length()>0){
-                        sql += metricSQL;
-                    }else{
-                        metricSQL = metricSQL.substring(1,metricSQL.length());
-                        sql += metricSQL;
+                if (this.metrics.size() > 0) {
+                    metricSQL = metricSQL + "," + this.metrics.buildSQL(true);
+                    if (concatSQL.length() > 0) {
+                        sql = sql + metricSQL;
+                    } else {
+                        metricSQL = metricSQL.substring(1, metricSQL.length());
+                        sql = sql + metricSQL;
                     }
                 }
-
             }
-        }else{
-            ColumnList<Column> columns = (ColumnList<Column>) dimensions.addList(metrics,ColumnList.class);
-            sql += columns.buildSQL(true);
+        } else {
+            ColumnList<Column> columns = (ColumnList)this.dimensions.addList(this.metrics, ColumnList.class);
+            sql = sql + columns.buildSQL(true);
         }
 
-        //table
-        String dbName = (database!=null&&(!"".equals(database)))?(database+"."):"";
-        sql += " FROM "+ dbName + table.buildSQL();
+        String dbName = this.database != null && !"".equals(this.database) ? this.database + "." : "";
+        sql = sql + " FROM " + dbName + this.table.buildSQL();
+        RestrictList<Filter> dimensionFilter = new RestrictList();
+        RestrictList<Filter> metricFilter = new RestrictList();
+        Iterator var5 = this.filters.iterator();
 
-        //filters are took apart into 2 parts(dimension and metric)!!!
-        RestrictList<Filter> dimensionFilter = new RestrictList<>();
-        RestrictList<Filter> metricFilter = new RestrictList<>();
-        for(Filter filter:filters){
-            if(filter.getType()==0){
+        while(var5.hasNext()) {
+            Filter filter = (Filter)var5.next();
+            if (filter.getType() == 0) {
                 dimensionFilter.add(filter);
-            }else{
+            } else {
                 metricFilter.add(filter);
             }
         }
 
-        //WHERE
-        if(dimensionFilter.size()>0){
-            sql += " WHERE "+dimensionFilter.buildSQLDivdByValue(" AND ");
+        if (dimensionFilter.size() > 0) {
+            sql = sql + " WHERE " + dimensionFilter.buildSQLDivdByValue(" AND ");
         }
 
-        //GROUP BY
-        if(dimensions.size()>0){
-            sql += " GROUP BY "+dimensions.buildSQL();
+        if (this.dimensions.size() > 0) {
+            sql = sql + " GROUP BY " + this.dimensions.buildSQL();
         }
 
-        //HAVING
-        if(metricFilter.size()>0){
-            sql += " HAVING "+metricFilter.buildSQLDivdByValue(" AND ");
+        if (metricFilter.size() > 0) {
+            sql = sql + " HAVING " + metricFilter.buildSQLDivdByValue(" AND ");
         }
 
-        //ORDER
-        if(orders.size()>0){
-            sql += " ORDER BY "+orders.buildSQL();
+        if (this.orders.size() > 0) {
+            sql = sql + " ORDER BY " + this.orders.buildSQL();
         }
 
-        //LIMIT
-        if(!"".equals(limit)){
-            sql += " LIMIT "+limit;
+        if (!"".equals(this.limit)) {
+            sql = sql + " LIMIT " + this.limit;
         }
 
         return sql;
     }
 
-    public String buildCountSQL(){
+    public String buildCountSQL() {
         String sql = "SELECT count(1) FROM ";
-        //table
-        String dbName = (database!=null&&(!"".equals(database)))?(database+"."):"";
-        sql += dbName+table.buildSQL();
+        String dbName = this.database != null && !"".equals(this.database) ? this.database + "." : "";
+        sql = sql + dbName + this.table.buildSQL();
+        RestrictList<Filter> dimensionFilter = new RestrictList();
+        RestrictList<Filter> metricFilter = new RestrictList();
+        Iterator var5 = this.filters.iterator();
 
-        //filters are took apart into 2 parts(dimension and metric)!!!
-        RestrictList<Filter> dimensionFilter = new RestrictList<>();
-        RestrictList<Filter> metricFilter = new RestrictList<>();
-        for(Filter filter:filters){
-            if(filter.getType()==0){
+        while(var5.hasNext()) {
+            Filter filter = (Filter)var5.next();
+            if (filter.getType() == 0) {
                 dimensionFilter.add(filter);
-            }else{
+            } else {
                 metricFilter.add(filter);
             }
         }
 
-        //WHERE
-        if(dimensionFilter.size()>0){
-            sql += " WHERE "+dimensionFilter.buildSQLDivdByValue(" AND ");
+        if (dimensionFilter.size() > 0) {
+            sql = sql + " WHERE " + dimensionFilter.buildSQLDivdByValue(" AND ");
         }
 
-        //GROUP BY
-        if(dimensions.size()>0){
-            sql += " GROUP BY "+dimensions.buildSQL();
-            //HAVING
-            if(metricFilter.size()>0){
-                sql += " HAVING "+metricFilter.buildSQLDivdByValue(" AND ");
+        if (this.dimensions.size() > 0) {
+            sql = sql + " GROUP BY " + this.dimensions.buildSQL();
+            if (metricFilter.size() > 0) {
+                sql = sql + " HAVING " + metricFilter.buildSQLDivdByValue(" AND ");
             }
         }
 
-        sql = "SELECT COUNT(1) total FROM ("+sql+") tmp";
-
+        sql = "SELECT COUNT(1) total FROM (" + sql + ") tmp";
         return sql;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -141,7 +128,7 @@ public class SimpleSlice implements Slice{
     }
 
     public String getDatabase() {
-        return database;
+        return this.database;
     }
 
     public void setDatabase(String database) {
@@ -149,7 +136,7 @@ public class SimpleSlice implements Slice{
     }
 
     public Table getTable() {
-        return table;
+        return this.table;
     }
 
     public void setTable(Table table) {
@@ -157,7 +144,7 @@ public class SimpleSlice implements Slice{
     }
 
     public int getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(int type) {
@@ -165,7 +152,7 @@ public class SimpleSlice implements Slice{
     }
 
     public ColumnList<Column> getDimensions() {
-        return dimensions;
+        return this.dimensions;
     }
 
     public void setDimensions(ColumnList<Column> dimensions) {
@@ -173,7 +160,7 @@ public class SimpleSlice implements Slice{
     }
 
     public ColumnList<Column> getMetrics() {
-        return metrics;
+        return this.metrics;
     }
 
     public void setMetrics(ColumnList<Column> metrics) {
@@ -181,7 +168,7 @@ public class SimpleSlice implements Slice{
     }
 
     public RestrictList<Filter> getFilters() {
-        return filters;
+        return this.filters;
     }
 
     public void setFilters(RestrictList<Filter> filters) {
@@ -189,7 +176,7 @@ public class SimpleSlice implements Slice{
     }
 
     public RestrictList<Order> getOrders() {
-        return orders;
+        return this.orders;
     }
 
     public void setOrders(RestrictList<Order> orders) {
@@ -197,7 +184,7 @@ public class SimpleSlice implements Slice{
     }
 
     public String getLimit() {
-        return limit;
+        return this.limit;
     }
 
     public void setLimit(String limit) {

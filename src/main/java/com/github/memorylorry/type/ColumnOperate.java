@@ -1,16 +1,7 @@
 package com.github.memorylorry.type;
 
 public interface ColumnOperate {
-    /**
-     * 返回字段的SQL
-     * @param isWithAS 控制是否带有AS
-     * @return
-     */
-    String buildSQL(boolean isWithAS);
+    String buildSQL(boolean var1);
 
-    /**
-     * 返回字段的SQL
-     * @return
-     */
     String buildSQL();
 }

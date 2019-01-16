@@ -3,20 +3,17 @@ package com.github.memorylorry.type;
 import com.github.memorylorry.type.helper.FilterOptionHelper;
 
 public class Filter implements RestrictOperate {
-
-    private String name;//不允许有空格
+    private String name;
     private String verbose;
-    private String expression;//如果expression为空串，则用name
+    private String expression;
     private String operation;
     private String option;
-    /**
-     * type 0-dimension(where) 1-metric(having)
-     */
     private int type;
 
-    public Filter(){}
+    public Filter() {
+    }
 
-    public Filter(String name,String verbose,String expression,String operation,String option,int type){
+    public Filter(String name, String verbose, String expression, String operation, String option, int type) {
         this.name = name;
         this.verbose = verbose;
         this.expression = expression;
@@ -25,13 +22,12 @@ public class Filter implements RestrictOperate {
         this.type = type;
     }
 
-    @Override
     public String buildSQL() {
         return FilterOptionHelper.createFilterOptionHelper(this).getOptionString();
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -39,7 +35,7 @@ public class Filter implements RestrictOperate {
     }
 
     public String getVerbose() {
-        return verbose;
+        return this.verbose;
     }
 
     public void setVerbose(String verbose) {
@@ -47,7 +43,7 @@ public class Filter implements RestrictOperate {
     }
 
     public String getExpression() {
-        return expression;
+        return this.expression;
     }
 
     public void setExpression(String expression) {
@@ -55,7 +51,7 @@ public class Filter implements RestrictOperate {
     }
 
     public String getOperation() {
-        return operation;
+        return this.operation;
     }
 
     public void setOperation(String operation) {
@@ -63,7 +59,7 @@ public class Filter implements RestrictOperate {
     }
 
     public String getOption() {
-        return option;
+        return this.option;
     }
 
     public void setOption(String option) {
@@ -71,7 +67,7 @@ public class Filter implements RestrictOperate {
     }
 
     public int getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(int type) {

@@ -1,32 +1,33 @@
 package com.github.memorylorry.type;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CommonList<E> extends ArrayList<E> {
+    public CommonList() {
+    }
 
-    /**
-     * Doesn't change data itself, return a new result
-     * @param commonList
-     * @return
-     */
-    public <T extends CommonList> T addList(CommonList<E> commonList,Class<T> clazz) throws InstantiationException, IllegalAccessException {
-        T res = copy(clazz);
-        for(E e:commonList){
+    public <T extends CommonList> T addList(CommonList<E> commonList, Class<T> clazz) throws InstantiationException, IllegalAccessException {
+        T res = this.copy(clazz);
+        Iterator<E> var4 = commonList.iterator();
+
+        while(var4.hasNext()) {
+            E e = var4.next();
             res.add(e);
         }
+
         return res;
     }
 
-    /**
-     * copy one new itself
-     * @return
-     */
     public <T extends CommonList> T copy(Class<T> clazz) throws IllegalAccessException, InstantiationException {
         T t = clazz.newInstance();
-        for(E e:this){
+        Iterator<E> var3 = this.iterator();
+
+        while(var3.hasNext()) {
+            E e = var3.next();
             t.add(e);
         }
+
         return t;
     }
-
 }

@@ -1,34 +1,33 @@
 package com.github.memorylorry.type;
 
 public class Column implements ColumnOperate {
-
-    private String name;//不允许有空格
+    private String name;
     private String verbose;
-    private String expression;//如果expression为空串，则用name
+    private String expression;
 
-    public Column(){}
+    public Column() {
+    }
 
-    public Column(String name,String verbose,String expression){
+    public Column(String name, String verbose, String expression) {
         this.name = name;
         this.verbose = verbose;
         this.expression = expression;
     }
 
-    @Override
     public String buildSQL(boolean isWithAS) {
-        if(isWithAS){
-            return "".equals(expression)?name:(expression + " AS " + name);
+        if (isWithAS) {
+            return "".equals(this.expression) ? this.name : this.expression + " AS " + this.name;
+        } else {
+            return this.buildSQL();
         }
-        return buildSQL();
     }
 
-    @Override
     public String buildSQL() {
-        return "".equals(expression)?name:expression;
+        return "".equals(this.expression) ? this.name : this.expression;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -36,7 +35,7 @@ public class Column implements ColumnOperate {
     }
 
     public String getVerbose() {
-        return verbose;
+        return this.verbose;
     }
 
     public void setVerbose(String verbose) {
@@ -44,11 +43,10 @@ public class Column implements ColumnOperate {
     }
 
     public String getExpression() {
-        return expression;
+        return this.expression;
     }
 
     public void setExpression(String expression) {
         this.expression = expression;
     }
-
 }

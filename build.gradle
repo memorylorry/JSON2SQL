@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group 'com.github.memorylorry'
-version '1.0.3'
+version '1.0.7'
 sourceCompatibility = 1.8
 
 repositories {

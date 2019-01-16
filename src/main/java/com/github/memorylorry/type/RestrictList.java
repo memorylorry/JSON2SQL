@@ -1,33 +1,30 @@
 package com.github.memorylorry.type;
 
-public class RestrictList<E> extends CommonList<E> implements RestrictOperate {
+import java.util.Iterator;
 
-    /**
-     * @return restrics with {,} delimeter
-     */
-    @Override
-    public String buildSQL() {
-        return buildSQLDivdByValue(",");
+public class RestrictList<E> extends CommonList<E> implements RestrictOperate {
+    public RestrictList() {
     }
 
-    /**
-     * @return restrics with {value} delimeter
-     */
+    public String buildSQL() {
+        return this.buildSQLDivdByValue(",");
+    }
+
     public String buildSQLDivdByValue(String value) {
         value = value.toUpperCase();
-
         String res = "";
-        for(E restric:this){
-            RestrictOperate op = (RestrictOperate) restric;
-            res = res + value + op.buildSQL();
+
+        RestrictOperate op;
+        for(Iterator<E> var3 = this.iterator(); var3.hasNext(); res = res + value + op.buildSQL()) {
+            E restric = var3.next();
+            op = (RestrictOperate)restric;
         }
 
-        if(res.length()>0) {
+        if (res.length() > 0) {
             int len = value.length();
             res = res.substring(len, res.length());
         }
 
         return res;
     }
-
 }
