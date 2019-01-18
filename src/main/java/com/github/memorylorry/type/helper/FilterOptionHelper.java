@@ -42,7 +42,7 @@ public class FilterOptionHelper {
             sql = column + " " + op + " " + option;
         } else {
             option = this.formatByFun(this.filter.getOption(), "fun:");
-            sql = column + op + option;
+            sql = column + " " + op + " " + option;
         }
 
         return sql;

@@ -10,7 +10,8 @@ public enum FilterOperationType {
     GREATER_EQUAL(">=", String.class),
     LESS_EQUAL("<=", String.class),
     EQUAL("=", String.class),
-    NOT_EQUAL("!=", String.class);
+    NOT_EQUAL("!=", String.class),
+    LIKE("like", String.class);
 
     private String operation;
     private Class type;
@@ -31,7 +32,7 @@ public enum FilterOperationType {
             }
         }
 
-        return null;
+        return String.class;
     }
 
     public String getOperation() {
