@@ -8,17 +8,19 @@ public class Filter implements RestrictOperate {
     private String expression;
     private String operation;
     private String option;
+    private String optionText;
     private int type;
 
     public Filter() {
     }
 
-    public Filter(String name, String verbose, String expression, String operation, String option, int type) {
+    public Filter(String name, String verbose, String expression, String operation, String option, String optionText, int type) {
         this.name = name;
         this.verbose = verbose;
         this.expression = expression;
         this.operation = operation;
         this.option = option;
+        this.optionText = optionText;
         this.type = type;
     }
 
@@ -72,5 +74,13 @@ public class Filter implements RestrictOperate {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getOptionText() {
+        return optionText;
+    }
+
+    public void setOptionText(String optionText) {
+        this.optionText = optionText;
     }
 }

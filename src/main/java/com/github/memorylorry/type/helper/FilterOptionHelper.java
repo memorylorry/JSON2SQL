@@ -28,6 +28,16 @@ public class FilterOptionHelper {
         String op = this.filter.getOperation();
         String sql;
         if (type.equals(ArrayList.class)) {
+            //optionText
+            String optionText = this.filter.getOptionText();
+            if(optionText!=null && optionText.length()>0){
+                optionText = optionText.replaceAll(",","','").replaceAll("\n","");
+                optionText = "'"+optionText +"'";
+            }else{
+                optionText = "";
+            }
+
+            //option处理位置
             JSONArray optionsArr = JSON.parseArray(this.filter.getOption());
 
             for(int i = 0; i < optionsArr.size(); ++i) {
@@ -36,10 +46,13 @@ public class FilterOptionHelper {
             }
 
             if (option.length() > 0) {
-                option = "(" + option.substring(1, option.length()) + ")";
+                option = option.substring(1, option.length());
+                if(optionText.length()>0)option = option + "," + optionText;
+            }else{
+                option = optionText;
             }
 
-            sql = column + " " + op + " " + option;
+            sql = column + " " + op + " (" + option +")";
         } else {
             option = this.formatByFun(this.filter.getOption(), "fun:");
             sql = column + " " + op + " " + option;

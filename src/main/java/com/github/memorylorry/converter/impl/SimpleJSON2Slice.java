@@ -85,8 +85,9 @@ public class SimpleJSON2Slice implements JSON2Slice {
             String expression = obj.getString("expression");
             String operation = obj.getString("operation");
             String option = obj.getString("option");
+            String optionText = obj.getString("optionText");
             int type = obj.getInteger("type");
-            filters.add(new Filter(name, verbose, expression, operation, option, type));
+            filters.add(new Filter(name, verbose, expression, operation, option,optionText, type));
         }
 
         return filters;
