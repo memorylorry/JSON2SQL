@@ -40,9 +40,17 @@ This is a project designed to connect json with SQL. Welcome to pull it and modi
 	  "join_method":"left join",
 	  "slice":{"database":"dm","table_id":351,"table":"dm_total_user_profile","type":"not_paginate_table","type_val":2,"dimension":[{"expression":"telphone_no","name":"d0","verbose":"会员手机号"},{"expression":"last_seq_days","name":"d1","verbose":"离最后一次购物间隔天数"}],"metric":[],"filter":[{"expression":"substring(register_time,1,10)","name":"c5008","type":0,"operation":">=","verbose":"注册日期","sql":"","option":"2019-03-01"},{"expression":"register_time","name":"c5006","type":0,"operation":"<=","verbose":"注册时间","sql":"","option":"2019-04-15"},{"expression":"register_store","name":"c4963","type":0,"operation":">=","verbose":"注册门店代码","sql":"","option":"3000"}],"order":[{"name":"d0","verbose":"","expression":"telphone_no","operation":"asc"}],"limit":5000,"title":"新会员","href":{},"appID":"1658","appType":"slice"},
 	  "associate": {
-	    "left":"1",
-	    "op":"=",
-	    "right":"1"
+        "left": {
+			"expression": "age",
+			"name": "d0",
+			"verbose": "年龄"
+		},
+		"op": "=",
+		"right": {
+			"expression": "telphone_no",
+			"name": "d0",
+			"verbose": "会员手机号"
+		}
 	  }
 	}] 
 }
