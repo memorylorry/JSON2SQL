@@ -1,6 +1,12 @@
 package com.github.memorylorry.type;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.memorylorry.config.SQLGenerateControl;
+import com.github.memorylorry.converter.JSON2Slice;
+import com.github.memorylorry.converter.impl.SimpleJSON2Slice;
+import com.github.memorylorry.type.exception.SliceFormatNotSupportedException;
+
 import java.util.Iterator;
 
 public class SimpleSlice implements Slice {
@@ -13,19 +19,24 @@ public class SimpleSlice implements Slice {
     private RestrictList<Filter> filters;
     private RestrictList<Order> orders;
     private String limit;
+    private JSONArray join;
 
     public SimpleSlice() {
     }
 
     public String buildBasicSQL() throws IllegalAccessException, InstantiationException {
+        return buildBasicSQL("",true);
+    }
+    @Override
+    public String buildBasicSQL(String suffix,boolean useOrderAndLimit) throws IllegalAccessException, InstantiationException {
         String sql = "SELECT ";
         if (this.type == SQLGenerateControl.DIMENSIN_NOT_EXSIT) {
-            sql = sql + this.metrics.buildSQL(true);
+            sql = sql + this.metrics.buildSQL(true,suffix);
         } else if (this.type == SQLGenerateControl.DIMENSIN_CONCAT) {
             int dimensionSize = this.dimensions.size();
             if (dimensionSize == 1) {
                 ColumnList<Column> columns = (ColumnList)this.dimensions.addList(this.metrics, ColumnList.class);
-                sql = sql + columns.buildSQL(true);
+                sql = sql + columns.buildSQL(true,suffix);
             } else {
                 String concatSQL = this.dimensions.buildSQLDivdByValue(",',',");
                 if (concatSQL.length() > 0) {
@@ -35,7 +46,7 @@ public class SimpleSlice implements Slice {
 
                 String metricSQL = "";
                 if (this.metrics.size() > 0) {
-                    metricSQL = metricSQL + "," + this.metrics.buildSQL(true);
+                    metricSQL = metricSQL + "," + this.metrics.buildSQL(true,suffix);
                     if (concatSQL.length() > 0) {
                         sql = sql + metricSQL;
                     } else {
@@ -46,11 +57,47 @@ public class SimpleSlice implements Slice {
             }
         } else {
             ColumnList<Column> columns = (ColumnList)this.dimensions.addList(this.metrics, ColumnList.class);
-            sql = sql + columns.buildSQL(true);
+            sql = sql + columns.buildSQL(true,suffix);
         }
 
         String dbName = this.database != null && !"".equals(this.database) ? this.database + "." : "";
+        //衔接表名
         sql = sql + " FROM " + dbName + this.table.buildSQL();
+        String tableVerbose = "".equals(suffix)?"root":"inner"+suffix;
+        sql += " " + tableVerbose;
+
+        //增加join的操作
+        if(this.join!=null){
+            for(int i=0;i<this.join.size();i++){
+                JSONObject aJoin = this.join.getJSONObject(i);
+                sql += " "+aJoin.getString("join_method");
+
+                //(tbl) t
+                JSONObject slice = aJoin.getJSONObject("slice");
+                SimpleJSON2Slice json2Slice = new SimpleJSON2Slice();
+                try {
+                    SimpleSlice ss = json2Slice.format(slice);
+                    sql += " ("+ss.buildBasicSQL("_"+i,false)+") st"+i;
+                } catch (SliceFormatNotSupportedException e) {
+                    e.printStackTrace();
+                    sql += e.getMessage();
+                }
+
+                JSONObject condition = aJoin.getJSONObject("associate");
+                JSONObject left = condition.getJSONObject("left");
+                JSONObject right = condition.getJSONObject("right");
+
+                String lfOP = left.getString("expression");
+                String regex = ".*(\\+|-|\\*|/|\\(|\\)|\\[|\\]|\\{|\\}|\\ ).*";
+                if(!lfOP.matches(regex)){
+                    lfOP = tableVerbose+"."+lfOP;
+                }
+
+                sql += " on "+ lfOP + " " + condition.getString("op") + " " + right.getString("name")+"_"+i;
+            }
+        }
+
+        //衔接过滤器
         RestrictList<Filter> dimensionFilter = new RestrictList();
         RestrictList<Filter> metricFilter = new RestrictList();
         Iterator var5 = this.filters.iterator();
@@ -76,11 +123,11 @@ public class SimpleSlice implements Slice {
             sql = sql + " HAVING " + metricFilter.buildSQLDivdByValue(" AND ");
         }
 
-        if (this.orders.size() > 0) {
+        if (useOrderAndLimit && this.orders.size() > 0) {
             sql = sql + " ORDER BY " + this.orders.buildSQL();
         }
 
-        if (!"".equals(this.limit)) {
+        if (useOrderAndLimit && !"".equals(this.limit)) {
             sql = sql + " LIMIT " + this.limit;
         }
 
@@ -88,9 +135,51 @@ public class SimpleSlice implements Slice {
     }
 
     public String buildCountSQL() {
+        return buildCountSQL("",true);
+    }
+    @Override
+    public String buildCountSQL(String suffix,boolean useOrderAndLimit) {
         String sql = "SELECT count(1) FROM ";
+
+        //衔接表名
         String dbName = this.database != null && !"".equals(this.database) ? this.database + "." : "";
         sql = sql + dbName + this.table.buildSQL();
+        String tableVerbose = "".equals(suffix)?"root":"inner_"+suffix;
+        sql += " " + tableVerbose;
+
+        //增加join的操作
+        if(this.join!=null){
+            for(int i=0;i<this.join.size();i++){
+                JSONObject aJoin = this.join.getJSONObject(i);
+                sql += " "+aJoin.getString("join_method");
+
+                //(tbl) t
+                JSONObject slice = aJoin.getJSONObject("slice");
+                SimpleJSON2Slice json2Slice = new SimpleJSON2Slice();
+                try {
+                    SimpleSlice ss = json2Slice.format(slice);
+                    sql += " ("+ss.buildBasicSQL("_"+i,false)+") st"+i;
+                } catch (SliceFormatNotSupportedException e) {
+                    e.printStackTrace();
+                    sql += e.getMessage();
+                } catch (IllegalAccessException|InstantiationException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject condition = aJoin.getJSONObject("associate");
+                JSONObject left = condition.getJSONObject("left");
+                JSONObject right = condition.getJSONObject("right");
+
+                String lfOP = left.getString("expression");
+                String regex = ".*(\\+|-|\\*|/|\\(|\\)|\\[|\\]|\\{|\\}|\\ ).*";
+                if(!lfOP.matches(regex)){
+                    lfOP = tableVerbose+"."+lfOP;
+                }
+
+                sql += " on "+ lfOP + " " + condition.getString("op") + " " + right.getString("name")+"_"+i;
+            }
+        }
+
         RestrictList<Filter> dimensionFilter = new RestrictList();
         RestrictList<Filter> metricFilter = new RestrictList();
         Iterator var5 = this.filters.iterator();
@@ -189,5 +278,13 @@ public class SimpleSlice implements Slice {
 
     public void setLimit(String limit) {
         this.limit = limit;
+    }
+
+    public JSONArray getJoin() {
+        return join;
+    }
+
+    public void setJoin(JSONArray join) {
+        this.join = join;
     }
 }

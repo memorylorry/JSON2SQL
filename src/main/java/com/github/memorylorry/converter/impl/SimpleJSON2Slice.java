@@ -58,6 +58,8 @@ public class SimpleJSON2Slice implements JSON2Slice {
         String limit = root.getString("limit");
         TestErrorUtil.testNotNull(limit);
         slice.setLimit(limit);
+        JSONArray join = root.getJSONArray("join");
+        slice.setJoin(join);
         return slice;
     }
 
@@ -107,4 +109,6 @@ public class SimpleJSON2Slice implements JSON2Slice {
 
         return orders;
     }
+
+
 }

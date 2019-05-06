@@ -22,6 +22,14 @@ public class Column implements ColumnOperate {
         }
     }
 
+    public String buildSQL(boolean isWithAS,String suffix) {
+        if (isWithAS) {
+            return "".equals(this.expression) ? this.name : this.expression + " AS " + this.name + suffix;
+        } else {
+            return this.buildSQL();
+        }
+    }
+
     public String buildSQL() {
         return "".equals(this.expression) ? this.name : this.expression;
     }
