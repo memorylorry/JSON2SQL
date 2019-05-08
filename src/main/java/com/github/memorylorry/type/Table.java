@@ -11,7 +11,7 @@ public class Table {
     }
 
     public String buildSQL() {
-        return this.name.toUpperCase().indexOf("SELECT") >= 0 ? "(" + this.name + ") t" : this.name;
+        return this.name.toUpperCase().indexOf("SELECT") >= 0 ? "(" + this.name + ") " : this.name;
     }
 
     public String getName() {

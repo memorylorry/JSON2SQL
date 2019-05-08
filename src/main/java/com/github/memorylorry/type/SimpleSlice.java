@@ -62,7 +62,9 @@ public class SimpleSlice implements Slice {
 
         String dbName = this.database != null && !"".equals(this.database) ? this.database + "." : "";
         //衔接表名
-        sql = sql + " FROM " + dbName + this.table.buildSQL();
+        String tab = this.table.buildSQL();
+        sql = sql + " FROM " + (tab.toUpperCase().indexOf("SELECT") >= 0?
+                                tab:dbName + tab);
         String tableVerbose = "".equals(suffix)?"root":"inner"+suffix;
         sql += " " + tableVerbose;
 
