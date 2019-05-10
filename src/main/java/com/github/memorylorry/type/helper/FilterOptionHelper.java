@@ -3,7 +3,10 @@ package com.github.memorylorry.type.helper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.github.memorylorry.type.Filter;
+import com.sun.deploy.util.StringUtils;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class FilterOptionHelper {
     private Filter filter;
@@ -53,7 +56,15 @@ public class FilterOptionHelper {
             }
 
             sql = column + " " + op + " (" + option +")";
-        } else {
+        }else if(type.equals(LgDateFunction.class)){
+            List<DateFun> conditions = new LgDateFunction().format(this.filter.getOption());
+            List<String> res = new ArrayList<>();
+            for(DateFun df:conditions){
+                res.add(column + " "+df.getOp()+" "+df.getVal());
+            }
+
+            return StringUtils.join(res," and ");
+        }else {
             option = this.formatByFun(this.filter.getOption(), "fun:");
             sql = column + " " + op + " " + option;
         }

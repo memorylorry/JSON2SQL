@@ -11,7 +11,8 @@ public enum FilterOperationType {
     LESS_EQUAL("<=", String.class),
     EQUAL("=", String.class),
     NOT_EQUAL("!=", String.class),
-    LIKE("like", String.class);
+    LIKE("like", String.class),
+    LG_DATE_FUN("lg_date_fun", LgDateFunction.class);
 
     private String operation;
     private Class type;
