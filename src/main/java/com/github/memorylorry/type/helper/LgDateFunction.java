@@ -17,7 +17,7 @@ public class LgDateFunction {
                     ,"date_sub(CURRENT_DATE,1+cast(case when pmod(datediff(date_sub(CURRENT_DATE,1),'1920-01-01')-3,7)>0 then pmod(datediff(date_sub(CURRENT_DATE,1),'1920-01-01')-3,7) else 7 end as INT))"
                 )
         );
-        funs.put("n day ago",new DateZone("date_sub(CURRENT_DATE,1+%s)"));
+        funs.put("n day ago",new DateZone("date_sub(CURRENT_DATE,%s)"));
         funs.put("this_month",new DateZone("concat(substring(date_sub(CURRENT_DATE,1),1,7),'-01')"));
         funs.put("this_season",new DateZone("date_sub(date_trunc('quarter',CURRENT_DATE),0)"));
         funs.put("this_year",new DateZone("concat(substring(date_sub(CURRENT_DATE,1),1,4),'-01-01')"));
