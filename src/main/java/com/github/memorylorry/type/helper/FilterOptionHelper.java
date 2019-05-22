@@ -21,7 +21,10 @@ public class FilterOptionHelper {
     }
 
     private String formatByFun(String str, String startWith) {
-        return str.startsWith(startWith) && str.length() > startWith.length() ? str.substring(startWith.length(), str.length()) : "'" + str + "'";
+        String option = filter.getType()==1 && !filter.getOperation().contains("like")?
+                str:
+                str.startsWith(startWith) && str.length() > startWith.length() ? str.substring(startWith.length(), str.length()) : "'" + str + "'";
+        return option;
     }
 
     public String getOptionString() {
@@ -34,8 +37,9 @@ public class FilterOptionHelper {
             //optionText
             String optionText = this.filter.getOptionText();
             if(optionText!=null && optionText.length()>0){
-                optionText = optionText.replaceAll(",","','").replaceAll("\n","");
-                optionText = "'"+optionText +"'";
+                optionText = filter.getType()==1?
+                        optionText.replaceAll("\n",""):
+                        "'" + optionText.replaceAll(",","','").replaceAll("\n","") + "'";
             }else{
                 optionText = "";
             }
