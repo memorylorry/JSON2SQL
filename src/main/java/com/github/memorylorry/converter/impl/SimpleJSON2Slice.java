@@ -43,10 +43,19 @@ public class SimpleJSON2Slice implements JSON2Slice {
         TestErrorUtil.testNotNull(dimensionJSON);
         ColumnList dimension = this.parse2ColumnList(dimensionJSON);
         slice.setDimensions(dimension);
+
+        //通常用metric作为指标，而在双轴折线图里面用metric和subMetric
         JSONArray metricJSON = root.getJSONArray("metric");
         TestErrorUtil.testNotNull(metricJSON);
         ColumnList metric = this.parse2ColumnList(metricJSON);
         slice.setMetrics(metric);
+
+        JSONArray subMetricJSON = root.getJSONArray("subMetric");
+        if(subMetricJSON != null){
+            ColumnList subMetric = this.parse2ColumnList(subMetricJSON);
+            slice.setSubMetrics(subMetric);
+        }
+
         JSONArray filterJSON = root.getJSONArray("filter");
         TestErrorUtil.testNotNull(filterJSON);
         RestrictList<Filter> filterList = this.parse2FilterList(filterJSON);
@@ -109,6 +118,4 @@ public class SimpleJSON2Slice implements JSON2Slice {
 
         return orders;
     }
-
-
 }

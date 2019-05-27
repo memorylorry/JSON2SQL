@@ -16,10 +16,13 @@ public class SimpleSlice implements Slice {
     private int type;
     private ColumnList<Column> dimensions;
     private ColumnList<Column> metrics;
+    private ColumnList<Column> subMetrics;
     private RestrictList<Filter> filters;
     private RestrictList<Order> orders;
     private String limit;
     private JSONArray join;
+
+    private boolean isMergedMetric = false;
 
     public SimpleSlice() {
     }
@@ -30,6 +33,12 @@ public class SimpleSlice implements Slice {
     @Override
     public String buildBasicSQL(String suffix,boolean useOrderAndLimit) throws IllegalAccessException, InstantiationException {
         String sql = "SELECT ";
+
+        //metric和subMetric合并
+        if(!isMergedMetric && this.metrics!=null && this.subMetrics!=null){
+            this.metrics = this.metrics.addList(this.subMetrics, ColumnList.class);
+            isMergedMetric = true;
+        }
         if (this.type == SQLGenerateControl.DIMENSIN_NOT_EXSIT) {
             sql = sql + this.metrics.buildSQL(true,suffix);
         } else if (this.type == SQLGenerateControl.DIMENSIN_CONCAT) {
@@ -291,5 +300,13 @@ public class SimpleSlice implements Slice {
 
     public void setJoin(JSONArray join) {
         this.join = join;
+    }
+
+    public ColumnList<Column> getSubMetrics() {
+        return subMetrics;
+    }
+
+    public void setSubMetrics(ColumnList<Column> subMetrics) {
+        this.subMetrics = subMetrics;
     }
 }
