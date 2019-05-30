@@ -2,7 +2,7 @@ package com.github.memorylorry.JSON2SQL;
 
 public enum ParserType {
 
-    SLICE_PARSER("com.github.memorylorry.JSON2SQL.parser.impl.SliceParser"),
+    SLICE_PARSER("com.github.memorylorry.JSON2SQL.parser.impl.SliceBasicParser"),
     COLUMN_PARSER("com.github.memorylorry.JSON2SQL.parser.impl.ColumnParser"),
     TABLE_PARSER("com.github.memorylorry.JSON2SQL.parser.impl.TableParser"),
     FILTER_PARSER("com.github.memorylorry.JSON2SQL.parser.impl.FilterParser"),
