@@ -1,6 +1,7 @@
 package com.github.memorylorry.JSON2SQL.parser;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.memorylorry.JSON2SQL.exception.JSON2SQLParseException;
 
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public abstract class JSONParser {
      * @param json
      * @return
      */
-    public abstract String parse(JSONObject json);
+    public abstract String parse(JSONObject json) throws JSON2SQLParseException;
 
     /**
      * 用于给parser绑定附加的属性

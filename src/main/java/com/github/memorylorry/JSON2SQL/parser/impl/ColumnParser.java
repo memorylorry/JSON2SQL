@@ -28,12 +28,12 @@ public class ColumnParser extends JSONParser {
 
     @Override
     public JSONParser bind(Map<String, Object> data) {
-        Object param1 = data.get("isWithAs");
+        Object param1 = data.get("isWithAS");
         if(param1!=null){
             isWithAS = (boolean) param1;
         }
 
-        Object param2 = data.get("isWithAs");
+        Object param2 = data.get("suffix");
         if(param2!=null){
             suffix = (String) param2;
         }
