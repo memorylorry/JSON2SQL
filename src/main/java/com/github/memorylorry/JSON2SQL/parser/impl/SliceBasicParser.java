@@ -17,8 +17,8 @@ import java.util.Map;
 
 public class SliceBasicParser extends SliceParser {
 
-    private boolean useOrderAndLimit = true;
-    private String suffix = "";
+    protected boolean useOrderAndLimit = true;
+    protected String suffix = "";
 
     private boolean isMergedMetric = false;
 

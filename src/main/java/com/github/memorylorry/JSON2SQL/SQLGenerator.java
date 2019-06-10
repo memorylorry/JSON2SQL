@@ -6,6 +6,8 @@ import com.github.memorylorry.JSON2SQL.parser.SliceParser;
 
 public class SQLGenerator {
 
+    public enum SLICE_TYPE{BASIC,COUNT};
+
     private ParserConf<String,String> parserConf;
 
     private SQLGenerator(){}
@@ -22,6 +24,23 @@ public class SQLGenerator {
         SQLGenerator sqlGenerator = new SQLGenerator();
         sqlGenerator.parserConf = parserConf;
         return sqlGenerator;
+    }
+
+    public static SQLGenerator build(SLICE_TYPE type){
+        SQLGenerator sqlGenerator = new SQLGenerator();
+        sqlGenerator.setParserConf(type);
+        return sqlGenerator;
+    }
+
+    public SQLGenerator setParserConf(SLICE_TYPE type){
+        if(type.equals(SLICE_TYPE.COUNT)){
+            //count
+            parserConf = ParserConf.buildSliceCountParseConf();
+        }else{
+            //basic and other
+            parserConf = ParserConf.buildSliceParseConf();
+        }
+        return this;
     }
 
     /**
