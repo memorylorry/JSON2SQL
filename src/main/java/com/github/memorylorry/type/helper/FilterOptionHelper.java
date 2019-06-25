@@ -21,9 +21,12 @@ public class FilterOptionHelper {
     }
 
     private String formatByFun(String str, String startWith) {
-        String option = filter.getType()==1 && !filter.getOperation().contains("like")?
-                str:
-                str.startsWith(startWith) && str.length() > startWith.length() ? str.substring(startWith.length(), str.length()) : "'" + str + "'";
+        String option = filter.getOperation().contains("like")?
+                "'%"+str+"%'": // like '%key%'
+                filter.getType()==1?
+                str: //若为指标
+                str.startsWith(startWith) && str.length() > startWith.length() ?
+                        str.substring(startWith.length(), str.length()) : "'" + str + "'";
         return option;
     }
 
