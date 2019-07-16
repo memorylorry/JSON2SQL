@@ -85,9 +85,12 @@ public class FilterParser extends JSONParser {
         Integer type = filter.getIntValue("type");
         String operation = filter.getString("operation");
 
-        String option = type==1 && operation!=null && !operation.contains("like")?
-                str:
-                str.startsWith(prefix) && str.length() > prefix.length() ? str.substring(prefix.length(), str.length()) : "'" + str + "'";
+        String option = operation!=null && operation.contains("like")?
+                "'%"+str+"%'": // like '%key%'
+                type==1?
+                str: //若为指标
+                str.startsWith(prefix) && str.length() > prefix.length() ?
+                str.substring(prefix.length(), str.length()) : "'" + str + "'";
         return option;
     }
 
