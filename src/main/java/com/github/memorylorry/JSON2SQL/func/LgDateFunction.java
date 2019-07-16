@@ -14,6 +14,7 @@ public class LgDateFunction {
     private LgDateFunction(){}
 
     /**
+     * TODO 此处默认用的presto函数，应通过参数控制调用指定的函数
      * 创建函数解析器
      * @return
      */
