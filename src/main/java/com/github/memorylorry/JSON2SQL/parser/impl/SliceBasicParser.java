@@ -2,7 +2,7 @@ package com.github.memorylorry.JSON2SQL.parser.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.memorylorry.JSON2SQL.BeanCreator;
+import com.github.memorylorry.JSON2SQL.util.BeanCreator;
 import com.github.memorylorry.JSON2SQL.ParserType;
 import com.github.memorylorry.JSON2SQL.SQLGeneratorControl;
 import com.github.memorylorry.JSON2SQL.exception.JSON2SQLParseException;

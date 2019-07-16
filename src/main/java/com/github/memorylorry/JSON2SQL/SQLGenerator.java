@@ -3,6 +3,7 @@ package com.github.memorylorry.JSON2SQL;
 import com.alibaba.fastjson.JSONObject;
 import com.github.memorylorry.JSON2SQL.exception.JSON2SQLParseException;
 import com.github.memorylorry.JSON2SQL.parser.SliceParser;
+import com.github.memorylorry.JSON2SQL.util.BeanCreator;
 
 public class SQLGenerator {
 

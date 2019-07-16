@@ -1,4 +1,4 @@
-package com.github.memorylorry.JSON2SQL;
+package com.github.memorylorry.JSON2SQL.util;
 
 import com.github.memorylorry.JSON2SQL.exception.JSON2SQLParseException;
 
